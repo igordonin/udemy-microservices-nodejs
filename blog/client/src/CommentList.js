@@ -9,19 +9,7 @@ const Comment = ({ comment }) => {
   );
 };
 
-const CommentList = ({ postId }) => {
-
-  const [comments, setComments] = React.useState([]);
-
-  const fetchComments = async (postId) => {
-    const res = await axios.get(`http://localhost:4001/posts/${postId}/comments`);
-    setComments(res.data);
-  };
-
-  React.useEffect(() => {
-    fetchComments(postId);
-  }, []);
-
+const CommentList = ({ comments }) => {
   return (
     <div>
       <i>{comments.length} comment(s)</i>
@@ -29,7 +17,6 @@ const CommentList = ({ postId }) => {
         {comments.map(comment => <Comment comment={comment} />)}
       </ul>
     </div>
-
   );
 };
 
