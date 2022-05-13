@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-depl
+spec:
+  replicas: 1
+  # This instructs the deployment on how to find the Pods it should manage
+  selector:
+    matchLabels:
+      app: moderation
+  # The template is where we specify the exact configuration of the pod we want deployment to create
+  template:
+    metadata:
+      labels:
+        app: moderation
+    spec:
+      containers:
+        - name: moderation
+          image: igordonin/moderation
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-srv
+spec:
+  selector:
+    app: moderation
+  # this is default and might be ommited
+  type: ClusterIP
+  ports:
+    - name: moderation
+      protocol: TCP
+      port: 4003
+      targetPort: 4003

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-depl
+spec:
+  replicas: 1
+  # This instructs the deployment on how to find the Pods it should manage
+  selector:
+    matchLabels:
+      app: query
+  # The template is where we specify the exact configuration of the pod we want deployment to create
+  template:
+    metadata:
+      labels:
+        app: query
+    spec:
+      containers:
+        - name: query
+          image: igordonin/query
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  selector:
+    app: query
+  # this is default and might be ommited
+  type: ClusterIP
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002
