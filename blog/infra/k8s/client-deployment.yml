@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  # This instructs the deployment on how to find the Pods it should manage
+  selector:
+    matchLabels:
+      app: client
+  # The template is where we specify the exact configuration of the pod we want deployment to create
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: igordonin/client
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  # this is default and might be ommited
+  type: ClusterIP
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
