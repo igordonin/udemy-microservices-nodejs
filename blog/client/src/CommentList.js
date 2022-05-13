@@ -1,10 +1,17 @@
 import * as React from 'react';
-import axios from 'axios';
 
 const Comment = ({ comment }) => {
+  const { status, content } = comment;
+
+  const contentMap = {
+    approved: content,
+    rejected: 'Comment has been rejected',
+    pending: 'Comment is awaiting moderation',
+  }
+
   return (
     <li>
-      {comment.content}
+      {contentMap[status]}
     </li>
   );
 };
