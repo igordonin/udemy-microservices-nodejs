@@ -20,7 +20,7 @@ const PostList = () => {
   const [posts, setPosts] = React.useState({});
 
   const fetchPosts = async () => {
-    const res = await axios.get('http://posts.com/posts');
+    const res = await axios.get('http://posts.com/queries');
     setPosts(res.data);
   };
 
