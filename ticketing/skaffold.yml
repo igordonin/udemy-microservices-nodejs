@@ -7,8 +7,10 @@ deploy:
 build:
   local:
     push: false
+  googleCloudBuild:
+    projectId: udemy-sg-ticketing-dev
   artifacts:
-    - image: igordonin/auth
+    - image: us.gcr.io/udemy-sg-ticketing-dev/auth
       context: auth
       docker:
         dockerfile: Dockerfile
