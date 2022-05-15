@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: igordonin/auth
-          imagePullPolicy: Never
+          image: us.gcr.io/udemy-sg-ticketing-dev/auth
 ---
 apiVersion: v1
 kind: Service
