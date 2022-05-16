@@ -5,7 +5,7 @@ export class RequestValidationError extends TicketingError {
   statusCode = 400;
 
   constructor(public errors: ValidationError[]) {
-    super();
+    super('Validation errors');
 
     Object.setPrototypeOf(this, RequestValidationError.prototype);
   }

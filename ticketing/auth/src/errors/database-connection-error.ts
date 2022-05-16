@@ -5,7 +5,7 @@ export class DatabaseConnectionError extends TicketingError {
   statusCode = 500;
 
   constructor() {
-    super();
+    super('Error connecting to database');
 
     Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
   }

@@ -4,8 +4,8 @@ export type CommonError = {
 };
 
 export abstract class TicketingError extends Error {
-  constructor() {
-    super();
+  constructor(message: string) {
+    super(message);
 
     Object.setPrototypeOf(this, TicketingError.prototype);
   }
