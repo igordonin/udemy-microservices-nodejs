@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Password } from '../services/passwords';
 
 interface UserAttributes {
   email: string;
@@ -23,6 +24,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+});
+
+// it can't be an arrow because we need access to this as the document
+userSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+  }
+
+  done();
 });
 
 userSchema.statics.build = (attributes: UserAttributes) => {
