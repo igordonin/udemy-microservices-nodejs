@@ -38,7 +38,7 @@ const addJwtToSession = (req: Request, user: UserDocument) => {
       id: user.id,
       email: user.email,
     },
-    'hex'
+    process.env.JWT_KEY!
   );
 
   req.session = {
