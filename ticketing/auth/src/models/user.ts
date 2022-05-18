@@ -10,7 +10,7 @@ interface UserModel extends mongoose.Model<UserDocument> {
   build(attributes: UserAttributes): UserDocument;
 }
 
-interface UserDocument extends mongoose.Document {
+export interface UserDocument extends mongoose.Document {
   email: string;
   password: string;
 }
