@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import jwt from 'jsonwebtoken';
 import { BadRequestError } from '../errors/bad-request-error';
 import { RequestValidationError } from '../errors/request-validation-error';
 import { User, UserDocument } from '../models/user';
@@ -31,6 +32,20 @@ const buildAndSaveUser = async (req: Request): Promise<UserDocument> => {
   return user;
 };
 
+const addJwtToSession = (req: Request, user: UserDocument) => {
+  const userJwt = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    'hex'
+  );
+
+  req.session = {
+    jwt: userJwt,
+  };
+};
+
 const router = express.Router();
 
 router.post(
@@ -48,6 +63,7 @@ router.post(
 
     const user = await buildAndSaveUser(req);
 
+    addJwtToSession(req, user);
 
     res.status(201).send(user);
   }
