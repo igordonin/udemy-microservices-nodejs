@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { BadRequestError } from '../errors/bad-request-error';
 import { User, UserDocument } from '../models/user';
 import { validateRequest } from '../middlewares/validate-request';
 import { addJwtToSession } from '../helpers/jwt-helper';
