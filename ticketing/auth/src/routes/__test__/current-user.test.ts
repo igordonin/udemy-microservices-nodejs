@@ -2,20 +2,24 @@ import request from 'supertest';
 import { app } from '../../app';
 
 it('john is the current user', async () => {
-  const email = 'john@google.com';
+  const email = 'test@test.com';
 
-  await request(app)
-    .post('/api/users/sign-up')
-    .send({
-      email,
-      password: 'str0ngp@ssw',
-    })
-    .expect(201);
+  const cookie = await global.signup();
 
+  const response = await request(app)
+    .get('/api/users/current-user')
+    .set('Cookie', cookie)
+    .send()
+    .expect(200);
+
+  expect(response.body.currentUser.email).toEqual(email);
+});
+
+it('kathy is not authenticated', async () => {
   const response = await request(app)
     .get('/api/users/current-user')
     .send()
     .expect(200);
 
-  expect(response.body.currentUser.email).toEqual(email);
+  expect(response.body.currentUser).toBeNull();
 });
