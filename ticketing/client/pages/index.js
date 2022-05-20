@@ -6,14 +6,14 @@ const LandingPage = ({ currentUser }) => {
   return <div>Landing Page. Hello, {currentUser?.email}!</div>;
 }
 
-LandingPage.getInitialProps = async () => {
+LandingPage.getInitialProps = async ({ req }) => {
   const resource = '/api/users/current-user';
 
   const urlDomain = isScopeServerSide() ?
     'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' : '';
 
   const options = isScopeServerSide() ? {
-    headers: { Host: 'ticketing.dev' }
+    headers: req.headers
   } : {}
 
   const response = await axios.get(`${urlDomain}${resource}`, options)
