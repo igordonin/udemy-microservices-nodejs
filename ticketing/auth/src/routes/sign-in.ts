@@ -38,7 +38,7 @@ router.post(
 
     addJwtToSession(req, existingUser);
 
-    res.status(201).send(existingUser);
+    res.status(200).send(existingUser);
   }
 );
 

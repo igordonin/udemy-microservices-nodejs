@@ -2,6 +2,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { app } from '../app';
 
+jest.setTimeout(60000);
+
 let mongo: any;
 
 beforeAll(async () => {
@@ -16,9 +18,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   const collections = await mongoose.connection.db.collections();
 
-  collections.forEach(async (collection) => {
+  for (let collection of collections) {
     await collection.deleteMany({});
-  });
+  }
 });
 
 afterAll(async () => {
