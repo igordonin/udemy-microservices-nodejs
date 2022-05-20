@@ -1,28 +1,17 @@
-import axios from 'axios';
-
-const isScopeServerSide = () => typeof window === 'undefined';
+import buildClient from '../api/build-client';
 
 const LandingPage = ({ currentUser }) => {
   return <div>Landing Page. Hello, {currentUser?.email}!</div>;
 }
 
-LandingPage.getInitialProps = async ({ req }) => {
-  const resource = '/api/users/current-user';
-
-  const urlDomain = isScopeServerSide() ?
-    'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local' : '';
-
-  const options = isScopeServerSide() ? {
-    headers: req.headers
-  } : {}
-
-  const response = await axios.get(`${urlDomain}${resource}`, options)
+LandingPage.getInitialProps = async (context) => {
+  const { data } = await buildClient(context).get('/api/users/current-user')
     .catch(err => {
       console.log(err);
       return {};
     });
 
-  return response.data;
+  return data;
 };
 
 export default LandingPage;
