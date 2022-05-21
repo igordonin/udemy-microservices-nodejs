@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
+import { validateRequest } from '@igordonin-org/ticketing-common';
 import { User, UserDocument } from '../models/user';
-import { validateRequest } from '../middlewares/validate-request';
 import { addJwtToSession } from '../helpers/jwt-helper';
 import { validateSignUp } from '../middlewares/validate-sign-up';
 

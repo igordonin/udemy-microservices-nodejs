@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { BadRequestError } from '../errors/bad-request-error';
+import { BadRequestError } from '@igordonin-org/ticketing-common';
 import { User } from '../models/user';
 
 export const validateSignUp = async (
