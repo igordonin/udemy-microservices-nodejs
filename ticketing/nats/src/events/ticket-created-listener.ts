@@ -1,0 +1,14 @@
+import nats from 'node-nats-streaming';
+import { Listener } from './base-listener';
+
+class TicketCreatedListener extends Listener {
+  subject = 'ticket:created';
+  queueGroupName = 'payments-service';
+
+  onMessage(data: any, msg: nats.Message): void {
+    console.log('Event data!', data);
+    msg.ack();
+  }
+}
+
+export { TicketCreatedListener };
