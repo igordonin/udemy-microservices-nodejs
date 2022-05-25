@@ -1,5 +1,6 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 import { app } from './app';
+import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -10,6 +11,19 @@ const start = async () => {
   }
 
   try {
+    await natsWrapper.connect({
+      clusterId: 'ticketing',
+      clientId: 'adsdas',
+      url: 'http://nats-srv:4222',
+    });
+
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB');
   } catch (err) {
