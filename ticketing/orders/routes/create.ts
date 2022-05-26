@@ -10,6 +10,8 @@ router.post(
   requireAuth,
   body('ticketId')
     .notEmpty()
+    // this tightly couples this service with tickets service implementation.
+    // this is just for the course and having an example.
     .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
     .withMessage('Ticket id must be provided'),
   validateRequest,
