@@ -3,18 +3,23 @@ import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
-  if (!process.env.JWT_KEY) {
-    throw new Error('JWT_KEY must be defined');
-  }
-  if (!process.env.MONGO_URI) {
-    throw new Error('MONGO_URI must be defined');
-  }
+  [
+    'JWT_KEY',
+    'MONGO_URI',
+    'NATS_CLIENT_ID',
+    'NATS_URL',
+    'NATS_CLUSTER_ID',
+  ].forEach((key) => {
+    if (!process.env[key]) {
+      throw new Error(`${key} must be defined`);
+    }
+  });
 
   try {
     await natsWrapper.connect({
-      clusterId: 'ticketing',
-      clientId: 'adsdas',
-      url: 'http://nats-srv:4222',
+      clusterId: process.env.NATS_CLUSTER_ID!,
+      clientId: process.env.NATS_CLIENT_ID!,
+      url: process.env.NATS_URL!,
     });
 
     natsWrapper.client.on('close', () => {
@@ -24,7 +29,7 @@ const start = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI!);
     console.log('Connected to MongoDB');
   } catch (err) {
     console.log(err);
