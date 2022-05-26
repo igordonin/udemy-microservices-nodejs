@@ -4,7 +4,6 @@ import { body } from 'express-validator';
 import {
   BadRequestError,
   NotFoundError,
-  OrderStatus,
   requireAuth,
   validateRequest,
 } from '@igordonin-org/ticketing-common';
@@ -46,18 +45,9 @@ const verifyTicketIsNotReserved = async (req: express.Request) => {
     throw new NotFoundError();
   }
 
-  const existingOrder = await Order.findOne({
-    ticket,
-    status: {
-      $in: [
-        OrderStatus.Created,
-        OrderStatus.AwaitingPayment,
-        OrderStatus.Complete,
-      ],
-    },
-  });
+  const isReserved = await ticket.isReserved();
 
-  if (existingOrder) {
+  if (isReserved) {
     throw new BadRequestError(`Ticket ${ticket.title} is already reserved`);
   }
 };
