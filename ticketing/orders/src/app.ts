@@ -7,10 +7,10 @@ import {
   NotFoundError,
   currentUser,
 } from '@igordonin-org/ticketing-common';
-import { createTicketRouter } from './routes/create';
-import { findOneTicketRouter } from './routes/find-one';
-import { indexTicketRouter } from './routes';
-import { updateTicketRouter } from './routes/update';
+import { createOrderRouter } from './routes/create';
+import { showOrderRouter } from './routes/show';
+import { indexOrderRouter } from './routes';
+import { deleteOrderRouter } from './routes/delete';
 
 const app = express();
 app.set('trust proxy', true);
@@ -24,10 +24,10 @@ app.use(
 );
 app.use(currentUser);
 
-app.use(createTicketRouter);
-app.use(findOneTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+app.use(createOrderRouter);
+app.use(showOrderRouter);
+app.use(indexOrderRouter);
+app.use(deleteOrderRouter);
 
 app.all('*', () => {
   throw new NotFoundError();
