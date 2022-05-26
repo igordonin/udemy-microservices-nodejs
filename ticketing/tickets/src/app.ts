@@ -8,7 +8,7 @@ import {
   currentUser,
 } from '@igordonin-org/ticketing-common';
 import { createTicketRouter } from './routes/create';
-import { findOneTicketRouter } from './routes/find-one';
+import { showTicketRouter } from './routes/show';
 import { indexTicketRouter } from './routes';
 import { updateTicketRouter } from './routes/update';
 
@@ -25,7 +25,7 @@ app.use(
 app.use(currentUser);
 
 app.use(createTicketRouter);
-app.use(findOneTicketRouter);
+app.use(showTicketRouter);
 app.use(indexTicketRouter);
 app.use(updateTicketRouter);
 
