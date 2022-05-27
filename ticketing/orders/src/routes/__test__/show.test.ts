@@ -23,7 +23,7 @@ it("returns an error if order does not exist", async () => {
   const id = new mongoose.Types.ObjectId();
 
   await request(app)
-    .post(`/api/orders${id}`)
+    .get(`/api/orders/${id}`)
     .set("Cookie", global.signin())
     .send()
     .expect(404);
