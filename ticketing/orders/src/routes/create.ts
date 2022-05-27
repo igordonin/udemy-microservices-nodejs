@@ -1,42 +1,18 @@
-import mongoose from 'mongoose';
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import mongoose from "mongoose";
+import express, { Request, Response } from "express";
+import { body } from "express-validator";
+import { Order, OrderStatus } from "../models/order";
+import { Ticket, TicketDoc } from "../models/ticket";
 import {
   BadRequestError,
   NotFoundError,
   requireAuth,
   validateRequest,
-} from '@igordonin-org/ticketing-common';
-import { Ticket } from '../models/ticket';
-import { Order } from '../models/order';
+} from "@igordonin-org/ticketing-common";
 
 const router = express.Router();
 
-router.post(
-  '/api/orders',
-  requireAuth,
-  body('ticketId')
-    .notEmpty()
-    // this tightly couples this service with tickets service implementation.
-    // this is just for the course and having an example.
-    .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
-    .withMessage('Ticket id must be provided'),
-  validateRequest,
-  async (req: Request, res: Response) => {
-    const { ticketId } = req.body;
-
-    verifyTicketIsNotReserved(req);
-
-    const ticket = Ticket.find({ _id: ticketId });
-    const order = Order.find({ ticket });
-
-    res.send({});
-  }
-);
-
-export { router as createOrderRouter };
-
-const verifyTicketIsNotReserved = async (req: express.Request) => {
+const findTicketOrThrow = async (req: Request) => {
   const { ticketId } = req.body;
 
   const ticket = await Ticket.findById(ticketId);
@@ -45,9 +21,52 @@ const verifyTicketIsNotReserved = async (req: express.Request) => {
     throw new NotFoundError();
   }
 
+  return ticket;
+};
+
+const verifyTicketIsNotReserved = async (ticket: TicketDoc) => {
   const isReserved = await ticket.isReserved();
 
   if (isReserved) {
     throw new BadRequestError(`Ticket ${ticket.title} is already reserved`);
   }
 };
+
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+
+const setExpirationDate = () => {
+  const expiration = new Date();
+  expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
+  return expiration;
+};
+
+const reserveTicket = (req: Request, ticket: TicketDoc) => {
+  const expiration = setExpirationDate();
+
+  const order = Order.build({
+    userId: req.currentUser!.id,
+    status: OrderStatus.Created,
+    expiresAt: expiration,
+    ticket,
+  });
+};
+
+router.post(
+  "/api/orders",
+  requireAuth,
+  body("ticketId")
+    .notEmpty()
+    // this tightly couples this service with tickets service implementation.
+    // this is just for the course and having an example.
+    .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
+    .withMessage("Ticket id must be provided"),
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const ticket = await findTicketOrThrow(req);
+    verifyTicketIsNotReserved(ticket);
+    reserveTicket(req, ticket);
+    res.send({});
+  }
+);
+
+export { router as createOrderRouter };
