@@ -57,16 +57,18 @@ const reserveTicket = async (req: Request, ticket: TicketDoc) => {
 router.post(
   "/api/orders",
   requireAuth,
-  body("ticketId")
-    .notEmpty()
-    // this tightly couples this service with tickets service implementation.
-    // this is just for the course and having an example.
-    .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
-    .withMessage("Ticket id must be provided"),
+  [
+    body("ticketId")
+      .notEmpty()
+      // this tightly couples this service with tickets service implementation.
+      // this is just for the course and having an example.
+      .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
+      .withMessage("Ticket id must be provided"),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     const ticket = await findTicketOrThrow(req);
-    verifyTicketIsNotReserved(ticket);
+    await verifyTicketIsNotReserved(ticket);
     const order = await reserveTicket(req, ticket);
     res.status(201).send(order);
   }
