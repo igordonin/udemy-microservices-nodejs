@@ -40,7 +40,7 @@ const setExpirationDate = () => {
   return expiration;
 };
 
-const reserveTicket = (req: Request, ticket: TicketDoc) => {
+const reserveTicket = async (req: Request, ticket: TicketDoc) => {
   const expiration = setExpirationDate();
 
   const order = Order.build({
@@ -49,6 +49,9 @@ const reserveTicket = (req: Request, ticket: TicketDoc) => {
     expiresAt: expiration,
     ticket,
   });
+
+  await order.save();
+  return order;
 };
 
 router.post(
@@ -64,8 +67,8 @@ router.post(
   async (req: Request, res: Response) => {
     const ticket = await findTicketOrThrow(req);
     verifyTicketIsNotReserved(ticket);
-    reserveTicket(req, ticket);
-    res.send({});
+    const order = await reserveTicket(req, ticket);
+    res.status(201).send(order);
   }
 );
 
