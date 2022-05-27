@@ -1,5 +1,5 @@
-import { OrderStatus } from '@igordonin-org/ticketing-common';
 import mongoose from 'mongoose';
+import { OrderStatus } from '@igordonin-org/ticketing-common';
 import { TicketDoc } from './ticket';
 
 interface OrderAttrs {

@@ -6,7 +6,7 @@ interface TicketAttrs {
   price: number;
 }
 
-export interface TicketDoc extends mongoose.Document {
+interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
   isReserved(): Promise<boolean>;
@@ -60,4 +60,4 @@ ticketSchema.methods.isReserved = async function () {
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema);
 
-export { Ticket };
+export { Ticket, TicketDoc };
