@@ -7,6 +7,7 @@ import { natsWrapper } from '../../nats-wrapper';
 
 const buildTicket = async (title: string) => {
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title,
     price: 10,
   });

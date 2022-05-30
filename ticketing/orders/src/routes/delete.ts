@@ -6,7 +6,6 @@ import {
 } from '@igordonin-org/ticketing-common';
 import express, { Request, Response } from 'express';
 import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
-import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 import { Order, OrderStatus } from '../models/order';
 import { natsWrapper } from '../nats-wrapper';
 
@@ -33,6 +32,7 @@ router.delete(
 
     new OrderCancelledPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       ticket: {
         id: order.ticket.id,
       },

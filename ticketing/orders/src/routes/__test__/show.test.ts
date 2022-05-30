@@ -1,10 +1,11 @@
-import request from "supertest";
-import mongoose from "mongoose";
-import { app } from "../../app";
-import { Ticket, TicketDoc } from "../../models/ticket";
+import request from 'supertest';
+import mongoose from 'mongoose';
+import { app } from '../../app';
+import { Ticket, TicketDoc } from '../../models/ticket';
 
 const buildTicket = async (title: string) => {
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title,
     price: 10,
   });
@@ -14,24 +15,24 @@ const buildTicket = async (title: string) => {
 };
 
 const buildOrder = async (cookie: string[], ticket: TicketDoc) => {
-  return await request(app).post("/api/orders").set("Cookie", cookie).send({
+  return await request(app).post('/api/orders').set('Cookie', cookie).send({
     ticketId: ticket.id,
   });
 };
 
-it("returns an error if order does not exist", async () => {
+it('returns an error if order does not exist', async () => {
   const id = new mongoose.Types.ObjectId();
 
   await request(app)
     .get(`/api/orders/${id}`)
-    .set("Cookie", global.signin())
+    .set('Cookie', global.signin())
     .send()
     .expect(404);
 });
 
-it("returns order from current user", async () => {
-  const ticket1 = await buildTicket("Concert 1");
-  const ticket2 = await buildTicket("Concert 2");
+it('returns order from current user', async () => {
+  const ticket1 = await buildTicket('Concert 1');
+  const ticket2 = await buildTicket('Concert 2');
 
   const user1 = global.signin();
   const user2 = global.signin();
@@ -41,16 +42,16 @@ it("returns order from current user", async () => {
 
   const response = await request(app)
     .get(`/api/orders/${order2.id}`)
-    .set("Cookie", user2)
+    .set('Cookie', user2)
     .send()
     .expect(200);
 
   expect(response.body.id).toEqual(order2.id);
 });
 
-it("not authorized for order from another user", async () => {
-  const ticket1 = await buildTicket("Concert 1");
-  const ticket2 = await buildTicket("Concert 2");
+it('not authorized for order from another user', async () => {
+  const ticket1 = await buildTicket('Concert 1');
+  const ticket2 = await buildTicket('Concert 2');
 
   const user1 = global.signin();
   const user2 = global.signin();
@@ -60,7 +61,7 @@ it("not authorized for order from another user", async () => {
 
   await request(app)
     .get(`/api/orders/${order2.id}`)
-    .set("Cookie", user1)
+    .set('Cookie', user1)
     .send()
     .expect(401);
 });
