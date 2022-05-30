@@ -1,14 +1,16 @@
-import mongoose from "mongoose";
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-import { Order, OrderStatus } from "../models/order";
-import { Ticket, TicketDoc } from "../models/ticket";
+import mongoose from 'mongoose';
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import { Order, OrderStatus } from '../models/order';
+import { Ticket, TicketDoc } from '../models/ticket';
 import {
   BadRequestError,
   NotFoundError,
   requireAuth,
   validateRequest,
-} from "@igordonin-org/ticketing-common";
+} from '@igordonin-org/ticketing-common';
+import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -55,21 +57,33 @@ const reserveTicket = async (req: Request, ticket: TicketDoc) => {
 };
 
 router.post(
-  "/api/orders",
+  '/api/orders',
   requireAuth,
   [
-    body("ticketId")
+    body('ticketId')
       .notEmpty()
       // this tightly couples this service with tickets service implementation.
       // this is just for the course and having an example.
       .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
-      .withMessage("Ticket id must be provided"),
+      .withMessage('Ticket id must be provided'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     const ticket = await findTicketOrThrow(req);
     await verifyTicketIsNotReserved(ticket);
     const order = await reserveTicket(req, ticket);
+
+    new OrderCreatedPublisher(natsWrapper.client).publish({
+      id: order.id,
+      status: order.status,
+      userId: order.userId,
+      expiresAt: order.expiresAt.toISOString(),
+      ticket: {
+        id: ticket.id,
+        price: ticket.price,
+      },
+    });
+
     res.status(201).send(order);
   }
 );
