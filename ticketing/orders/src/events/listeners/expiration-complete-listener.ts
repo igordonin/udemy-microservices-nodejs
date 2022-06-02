@@ -23,20 +23,22 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
       throw new NotFoundError();
     }
 
-    if (order.status !== OrderStatus.Complete) {
-      order.set({
-        status: OrderStatus.Cancelled,
-      });
-      await order.save();
-
-      await new OrderCancelledPublisher(this.client).publish({
-        id: order.id,
-        version: order.version,
-        ticket: {
-          id: order.ticket.id,
-        },
-      });
+    if (order.status === OrderStatus.Complete) {
+      return msg.ack();
     }
+
+    order.set({
+      status: OrderStatus.Cancelled,
+    });
+    await order.save();
+
+    await new OrderCancelledPublisher(this.client).publish({
+      id: order.id,
+      version: order.version,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     msg.ack();
   }
