@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@igordonin-org/ticketing-common": "^0.0.11",
+    "@igordonin-org/ticketing-common": "^0.0.16",
     "@types/node": "^15.12.2",
     "node-nats-streaming": "^0.3.2",
     "ts-node-dev": "^1.1.6",
