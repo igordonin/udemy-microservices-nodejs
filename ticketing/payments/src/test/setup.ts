@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 declare global {
-  var signin: () => string[];
+  var signin: (id?: string) => string[];
 }
 
 jest.setTimeout(60000);
@@ -35,11 +35,11 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+global.signin = (id?: string) => {
+  const userId = id || new mongoose.Types.ObjectId().toHexString();
 
   const payload = {
-    id,
+    id: userId,
     email: 'test@test.com',
   };
 

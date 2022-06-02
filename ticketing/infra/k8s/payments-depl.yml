@@ -21,6 +21,11 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: jwt_key
+            - name: STRIPE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret
+                  key: STRIPE_API_KEY
             - name: MONGO_URI
               value: 'mongodb://payments-mongo-srv:27017/payments'
             - name: NATS_CLUSTER_ID

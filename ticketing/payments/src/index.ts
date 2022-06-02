@@ -6,6 +6,7 @@ import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
   [
+    'STRIPE_API_KEY',
     'JWT_KEY',
     'MONGO_URI',
     'NATS_CLIENT_ID',
@@ -41,7 +42,7 @@ const start = async () => {
   }
 
   app.listen(3000, () => {
-    console.log('Tickets listening on port 3000!');
+    console.log('Payments listening on port 3000!');
   });
 };
 
