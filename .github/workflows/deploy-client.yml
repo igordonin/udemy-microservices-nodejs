@@ -1,0 +1,25 @@
+name: deploy-client
+
+on: 
+  push:
+    branches:
+      - master
+    paths:
+      - 'ticketing/client/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd ticketing/client && docker build -t igordonin/client .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push igordonin/client
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DOCTL_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save udemy-microservices-nodejs
+      - run: kubectl rollout restart deployment client-depl
