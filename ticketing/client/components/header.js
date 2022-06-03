@@ -12,33 +12,40 @@ const Header = ({ currentUser }) => {
       href: '/auth/sign-in',
     },
     currentUser && {
+      label: 'Sell Tickets',
+      href: '/tickets/create',
+    },
+    currentUser && {
+      label: 'My Orders',
+      href: '/orders',
+    },
+    currentUser && {
       label: 'Sign Out',
       href: '/auth/sign-out',
-    }
-  ].filter(link => link)
+    },
+  ]
+    .filter((link) => link)
     .map(({ label, href }) => {
       return (
         <li key={label}>
           <Link href={href}>
-            <a className='nav-link'>{label}</a>
+            <a className="nav-link">{label}</a>
           </Link>
         </li>
       );
     });
 
   return (
-    <nav className='navbar navbar-light bg-light'>
-      <Link href='/'>
-        <a className='navbar-brand'>Ticketing</a>
+    <nav className="navbar navbar-light bg-light">
+      <Link href="/">
+        <a className="navbar-brand">Ticketing</a>
       </Link>
 
-      <div className='d-flex justify-content-end'>
-        <ul className='nav d-flex align-items-center'>
-          {links}
-        </ul>
+      <div className="d-flex justify-content-end">
+        <ul className="nav d-flex align-items-center">{links}</ul>
       </div>
     </nav>
-  )
-}
+  );
+};
 
 export default Header;

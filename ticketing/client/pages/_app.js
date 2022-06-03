@@ -16,7 +16,9 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 AppComponent.getInitialProps = async (appContext) => {
   const client = buildClient(appContext.ctx);
   const { data } = await client.get('/api/users/current-user').catch((err) => {
-    console.log(err);
+    console.log('---------------------------------');
+    console.log('Error Fetching Current User', err);
+    console.log('---------------------------------');
     return {};
   });
 
