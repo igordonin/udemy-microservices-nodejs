@@ -4,7 +4,7 @@ const isScopeServerSide = () => typeof window === 'undefined';
 
 const buildServerSideAxiosInstance = (req) => {
   return axios.create({
-    baseURL: 'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local',
+    baseURL: 'http://ticketing-app-igordonin.xyz',
     headers: req.headers,
   })
 };
