@@ -34,7 +34,7 @@ const verifyTicketIsNotReserved = async (ticket: TicketDoc) => {
   }
 };
 
-const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+const EXPIRATION_WINDOW_SECONDS = 60;
 
 const setExpirationDate = () => {
   const expiration = new Date();
