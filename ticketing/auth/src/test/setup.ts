@@ -9,14 +9,14 @@ declare global {
 
 jest.setTimeout(60000);
 
-let mongo: any;
+let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
   process.env.JWT_KEY = 'whatever';
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
   mongo = await MongoMemoryServer.create();
-  const mongoUri = mongo.getUri();
+  const mongoUri = await mongo.getUri();
 
   await mongoose.connect(mongoUri);
 });
