@@ -5,6 +5,8 @@ import { OrderCreatedListener } from './events/listener/order-created-listener';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
+  console.log('starting up...');
+
   [
     'JWT_KEY',
     'MONGO_URI',
