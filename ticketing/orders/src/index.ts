@@ -7,6 +7,8 @@ import { TicketUpdatedListener } from './events/listeners/ticket-updated-listene
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
+  console.log('starting up...');
+
   [
     'JWT_KEY',
     'MONGO_URI',
